@@ -33,23 +33,52 @@ namespace Test
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            //打开图片
             OpenFileDialog openfiledialog = new OpenFileDialog
             {
                 Filter = "图像文件|*.jpg;*.png;*.jpeg;*.bmp;*.gif|所有文件|*.*"
             };
+
             if ((bool)openfiledialog.ShowDialog())
             {
                 photo.Source = new BitmapImage(new Uri(openfiledialog.FileName));
             }
+
             string filename = openfiledialog.FileName;
             exifmessage.Text = filename;
             StringBuilder sb = new StringBuilder();
             var directories = ImageMetadataReader.ReadMetadata(filename);
+            StringBuilder latitude = new StringBuilder();
+            StringBuilder longgitude = new StringBuilder();
+            //经度输出
             foreach (var directory in directories)
                 foreach (var tag in directory.Tags)
-                    sb.AppendLine($"{directory.Name} - {tag.Name} = {tag.Description}");
-            exifmessage.Text = sb.ToString();
-            
+                    if ($"{tag.Name}" == "GPS Latitude")
+                    {
+                        sb.AppendLine($"[{directory.Name}] {tag.Name} = {tag.Description}");
+                        latitude.AppendLine($"[{directory.Name}] {tag.Name} = {tag.Description}");
+                        exifmessage.Text = sb.ToString();
+                    }
+            //纬度输出
+            foreach (var directory in directories)
+                foreach (var tag in directory.Tags)
+                    if ($"{tag.Name}" == "GPS Longitude")
+                    {
+                        sb.AppendLine($"[{directory.Name}] {tag.Name} = {tag.Description}");
+                        longgitude.AppendLine($"[{directory.Name}] {tag.Name} = {tag.Description}");
+                        exifmessage.Text = sb.ToString();
+                    }
+            //转换经纬度
+            double newlatitude = 0;
+            double newlonggitude = 0;
+            string d = latitude.ToString();
+            Pushpin pushpin = new Pushpin();
+            MapLayer mapLayer = new MapLayer();
+
+            pushpin.Location = new Location(40, 110);
+            this.mapLayer.AddChild(pushpin, pushpin.Location);
+   
+            /*pus.Location = new Location(1,10);*/
         }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
