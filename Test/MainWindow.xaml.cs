@@ -71,19 +71,31 @@ namespace Test
             //转换经纬度
             double newlatitude = 0;
             double newlonggitude = 0;
-            string d = latitude.ToString();
+            string Lat= latitude.ToString();
+            string Lon = longgitude.ToString();
+            string temp = null;
+            for (int i = 0; i < Lat.Length; i++)
+            {
+                if(Lat[i].Equals("="))
+                {
+                    temp = Lat.Substring(i);
+                }
+            }
+            Console.WriteLine(temp);
+
+            //生成图钉
             Pushpin pushpin = new Pushpin();
             MapLayer mapLayer = new MapLayer();
 
             pushpin.Location = new Location(40, 110);
             this.mapLayer.AddChild(pushpin, pushpin.Location);
    
-            /*pus.Location = new Location(1,10);*/
+            
         }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-
+            //输出坐标
         }
     }
 }
