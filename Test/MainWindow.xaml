@@ -16,9 +16,11 @@
             <m:MapLayer x:Name="mapLayer" >
             </m:MapLayer>
         </m:Map>
-        <Image x:Name="photo" HorizontalAlignment="Left" Height="176" Margin="434,39,0,0" VerticalAlignment="Top" Width="306"/>
-        <Button x:Name="openfile" Content="打开图片" HorizontalAlignment="Left" Height="35" VerticalAlignment="Top" Width="93" Click="Button_Click" Margin="539,331,0,0"/>
-        <TextBox x:Name="exifmessage" HorizontalAlignment="Left" Height="70" Margin="444,242,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="280" TextChanged="TextBox_TextChanged"/>
+        <Image x:Name="photo" HorizontalAlignment="Left" Height="176" Margin="444,10,0,0" VerticalAlignment="Top" Width="306"/>
+        <Button x:Name="openfile" Content="打开图片" HorizontalAlignment="Left" Height="34" VerticalAlignment="Top" Width="93" Click="Button_Click" Margin="542,348,0,0"/>
+        <TextBox x:Name="exifmessage" HorizontalAlignment="Left" Height="61" Margin="458,208,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="280" TextChanged="TextBox_TextChanged"/>
+        <TextBox x:Name="latitudemessage" HorizontalAlignment="Left" Height="24" Margin="458,292,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="118"/>
+        <TextBox x:Name="longitudemessage" HorizontalAlignment="Left" Height="24" Margin="620,292,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="118"/>
 
     </Grid>
 </Window>

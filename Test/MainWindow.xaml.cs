@@ -72,22 +72,83 @@ namespace Test
             double newlatitude = 0;
             double newlonggitude = 0;
             string Lat= latitude.ToString();
-            string Lon = longgitude.ToString();
+            string Long = longgitude.ToString();
             string temp = null;
-            for (int i = 0; i < Lat.Length; i++)
+            int i = Lat.IndexOf('°');
+            int j = Lat.IndexOf("'");
+            int k = Lat.IndexOf('"');
+            for (int n = 0; n < Lat.Length; n++)
             {
-                if(Lat[i].Equals("="))
+                if (Lat[n]>='1' && Lat[n]<='9')
                 {
-                    temp = Lat.Substring(i);
+                    temp = Lat.Substring(n,i-n);
+                    break;
                 }
+
             }
-            Console.WriteLine(temp);
+            newlatitude = double.Parse(temp);
+            for (int n = i; n < Lat.Length; n++)
+            {
+                if (Lat[n] >= '1' && Lat[n] <= '9')
+                {
+                    temp = Lat.Substring(n, j - n);
+                    break;
+                }
+
+            }
+            newlatitude += double.Parse(temp)/60;
+            for (int n = j; n < Lat.Length; n++)
+            {
+                if (Lat[n] >= '1' && Lat[n] <= '9')
+                {
+                    temp = Lat.Substring(n, k - n);
+                    break;
+                }
+
+            }
+            newlatitude += double.Parse(temp)/3600;
+
+            int i2 = Long.IndexOf('°');
+            int j2 = Long.IndexOf("'");
+            int k2 = Long.IndexOf('"');
+            for (int n = 0; n < Long.Length; n++)
+            {
+                if (Long[n] >= '1' && Long[n] <= '9')
+                {
+                    temp =Long.Substring(n, i2 - n);
+                    break;
+                }
+
+            }
+            newlonggitude = double.Parse(temp);
+            for (int n = i2; n < Long.Length; n++)
+            {
+                if (Long[n] >= '1' && Long[n] <= '9')
+                {
+                    temp = Long.Substring(n, j2 - n);
+                    break;
+                }
+
+            }
+            newlonggitude += double.Parse(temp) / 60;
+            for (int n = j2; n < Long.Length; n++)
+            {
+                if (Long[n] >= '1' && Long[n] <= '9')
+                {
+                    temp = Long.Substring(n, k2 - n);
+                    break;
+                }
+
+            }
+            newlonggitude += double.Parse(temp) / 3600;
+            latitudemessage.Text = "经度：" + newlatitude.ToString("#0.000");
+            longitudemessage.Text = "纬度：" + newlonggitude.ToString("#0.000");
 
             //生成图钉
             Pushpin pushpin = new Pushpin();
             MapLayer mapLayer = new MapLayer();
 
-            pushpin.Location = new Location(40, 110);
+            pushpin.Location = new Location(newlatitude, newlonggitude);
             this.mapLayer.AddChild(pushpin, pushpin.Location);
    
             
