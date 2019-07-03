@@ -150,7 +150,12 @@ namespace Test
 
             pushpin.Location = new Location(newlatitude, newlonggitude);
             this.mapLayer.AddChild(pushpin, pushpin.Location);
-   
+            //生成路线
+            var start = 'Seattle, wa'; var end = 'Portland, OR';
+            
+                
+                
+            })
             
         }
 
