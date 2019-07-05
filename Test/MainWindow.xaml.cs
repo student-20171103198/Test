@@ -30,7 +30,9 @@ namespace Test
             InitializeComponent();
 
         }
-
+        int flag = 0;
+        double latTag = 0;
+        double longTag = 0;
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             //打开图片
@@ -85,20 +87,30 @@ namespace Test
             this.mapLayer.AddChild(pushpin, pushpin.Location);
             bingMap.Center = new Location(newlatitude, newlonggitude);
             bingMap.ZoomLevel = 14;
-            //生成路线
-            MapPolyline polyline = new MapPolyline();
-            polyline.Locations = new LocationCollection
+
+
+            //生成轨迹
+            
+
+            if (flag > 0)
             {
-                new Location(newlatitude,newlonggitude),
-                new Location(40,111)
-            };
+                MapPolyline polyline = new MapPolyline();
+                Location startlocation = new Location(latTag,longTag);
+                Location endlocation = new Location(newlatitude,newlonggitude);
+                polyline.Locations = new LocationCollection
+                {
+                new Location(startlocation),
+                new Location(endlocation)
+                };
 
-            polyline.Stroke = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Red);
-            polyline.StrokeThickness = 5;
-            //不透明度
-            polyline.Opacity = 0.8;
-            this.mapLayer.Children.Add(polyline);
-
+                polyline.Stroke = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Red);
+                polyline.StrokeThickness = 5;
+                polyline.Opacity = 0.8;//不透明度
+                this.mapLayer.Children.Add(polyline);
+            }
+            latTag = newlatitude;
+            longTag = newlonggitude;
+            flag++;
         }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -191,6 +203,5 @@ namespace Test
                 return newlonggitude;
             }
         }
-
     }
 }
