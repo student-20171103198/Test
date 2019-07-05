@@ -28,7 +28,7 @@ namespace Test
         public MainWindow()
         {
             InitializeComponent();
-            
+
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -71,76 +71,9 @@ namespace Test
             //转换经纬度
             double newlatitude = 0;
             double newlonggitude = 0;
-            string Lat= latitude.ToString();
-            string Long = longgitude.ToString();
-            string temp = null;
-            int i = Lat.IndexOf('°');
-            int j = Lat.IndexOf("'");
-            int k = Lat.IndexOf('"');
-            for (int n = 0; n < Lat.Length; n++)
-            {
-                if (Lat[n]>='1' && Lat[n]<='9')
-                {
-                    temp = Lat.Substring(n,i-n);
-                    break;
-                }
-
-            }
-            newlatitude = double.Parse(temp);
-            for (int n = i; n < Lat.Length; n++)
-            {
-                if (Lat[n] >= '1' && Lat[n] <= '9')
-                {
-                    temp = Lat.Substring(n, j - n);
-                    break;
-                }
-
-            }
-            newlatitude += double.Parse(temp)/60;
-            for (int n = j; n < Lat.Length; n++)
-            {
-                if (Lat[n] >= '1' && Lat[n] <= '9')
-                {
-                    temp = Lat.Substring(n, k - n);
-                    break;
-                }
-
-            }
-            newlatitude += double.Parse(temp)/3600;
-
-            int i2 = Long.IndexOf('°');
-            int j2 = Long.IndexOf("'");
-            int k2 = Long.IndexOf('"');
-            for (int n = 0; n < Long.Length; n++)
-            {
-                if (Long[n] >= '1' && Long[n] <= '9')
-                {
-                    temp =Long.Substring(n, i2 - n);
-                    break;
-                }
-
-            }
-            newlonggitude = double.Parse(temp);
-            for (int n = i2; n < Long.Length; n++)
-            {
-                if (Long[n] >= '1' && Long[n] <= '9')
-                {
-                    temp = Long.Substring(n, j2 - n);
-                    break;
-                }
-
-            }
-            newlonggitude += double.Parse(temp) / 60;
-            for (int n = j2; n < Long.Length; n++)
-            {
-                if (Long[n] >= '1' && Long[n] <= '9')
-                {
-                    temp = Long.Substring(n, k2 - n);
-                    break;
-                }
-
-            }
-            newlonggitude += double.Parse(temp) / 3600;
+            GPSConvert gPSConvert = new GPSConvert();
+            newlatitude = gPSConvert.getlatitude(latitude);
+            newlonggitude = gPSConvert.getlonggitude(longgitude);
             latitudemessage.Text = "经度：" + newlatitude.ToString("#0.000");
             longitudemessage.Text = "纬度：" + newlonggitude.ToString("#0.000");
 
@@ -150,18 +83,114 @@ namespace Test
 
             pushpin.Location = new Location(newlatitude, newlonggitude);
             this.mapLayer.AddChild(pushpin, pushpin.Location);
+            bingMap.Center = new Location(newlatitude, newlonggitude);
+            bingMap.ZoomLevel = 14;
             //生成路线
-            var start = 'Seattle, wa'; var end = 'Portland, OR';
-            
-                
-                
-            })
-            
+            MapPolyline polyline = new MapPolyline();
+            polyline.Locations = new LocationCollection
+            {
+                new Location(newlatitude,newlonggitude),
+                new Location(40,111)
+            };
+
+            polyline.Stroke = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Red);
+            polyline.StrokeThickness = 5;
+            //不透明度
+            polyline.Opacity = 0.8;
+            this.mapLayer.Children.Add(polyline);
+
         }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             //输出坐标
         }
+         
+        class   GPSConvert
+        {
+            public double getlatitude(StringBuilder latitude)
+            {
+                double newlatitude = 0;
+                string Lat = latitude.ToString();
+                string temp = null;
+                int i = Lat.IndexOf('°');
+                int j = Lat.IndexOf("'");
+                int k = Lat.IndexOf('"');
+                for (int n = 0; n < Lat.Length; n++)
+                {
+                    if (Lat[n] >= '1' && Lat[n] <= '9')
+                    {
+                        temp = Lat.Substring(n, i - n);
+                        break;
+                    }
+
+                }
+                newlatitude = double.Parse(temp);
+                for (int n = i; n < Lat.Length; n++)
+                {
+                    if (Lat[n] >= '1' && Lat[n] <= '9')
+                    {
+                        temp = Lat.Substring(n, j - n);
+                        break;
+                    }
+
+                }
+                newlatitude += double.Parse(temp) / 60;
+                for (int n = j; n < Lat.Length; n++)
+                {
+                    if (Lat[n] >= '1' && Lat[n] <= '9')
+                    {
+                        temp = Lat.Substring(n, k - n);
+                        break;
+                    }
+
+                }
+                newlatitude += double.Parse(temp) / 3600;
+                return newlatitude;
+                
+            }
+            
+            public double getlonggitude(StringBuilder longgitude)
+            {
+                double newlonggitude = 0;
+                string Long = longgitude.ToString();
+                string temp = null;
+                int i = Long.IndexOf('°');
+                int j = Long.IndexOf("'");
+                int k = Long.IndexOf('"');
+                for (int n = 0; n < Long.Length; n++)
+                {
+                    if (Long[n] >= '1' && Long[n] <= '9')
+                    {
+                        temp = Long.Substring(n, i - n);
+                        break;
+                    }
+
+                }
+                newlonggitude = double.Parse(temp);
+                for (int n = i; n < Long.Length; n++)
+                {
+                    if (Long[n] >= '1' && Long[n] <= '9')
+                    {
+                        temp = Long.Substring(n, j - n);
+                        break;
+                    }
+
+                }
+                newlonggitude += double.Parse(temp) / 60;
+                for (int n = j; n < Long.Length; n++)
+                {
+                    if (Long[n] >= '1' && Long[n] <= '9')
+                    {
+                        temp = Long.Substring(n, k - n);
+                        break;
+                    }
+
+                }
+                newlonggitude += double.Parse(temp) / 3600;
+                return newlonggitude;
+            }
+        }
+
     }
 }

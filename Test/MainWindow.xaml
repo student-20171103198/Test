@@ -12,7 +12,7 @@
             <ColumnDefinition Width="51*"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <m:Map m:Name="bingMap" CredentialsProvider="QGFLufZg2lHPsMflpjy3~o9eLvlGYs_jNSZkwrk-cdg~Aq5AQonrqv5FH7P-1qYT6s8SBRGIAFofjmHnTnzt72xSJcTI56XvprrWbP6WGeHY " Mode="Road"  ZoomLevel="9" Center="40,110" Margin="0,0,351,0" Height="397" VerticalAlignment="Top" HorizontalAlignment="Right" Width="414">
+        <m:Map m:Name="bingMap" CredentialsProvider="QGFLufZg2lHPsMflpjy3~o9eLvlGYs_jNSZkwrk-cdg~Aq5AQonrqv5FH7P-1qYT6s8SBRGIAFofjmHnTnzt72xSJcTI56XvprrWbP6WGeHY " Mode="Road"  ZoomLevel="9" Center="40.8,111.5" Margin="0,0,351,0" Height="397" VerticalAlignment="Top" HorizontalAlignment="Right" Width="414">
             <m:MapLayer x:Name="mapLayer" >
             </m:MapLayer>
         </m:Map>
