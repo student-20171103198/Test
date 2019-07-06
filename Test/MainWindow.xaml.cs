@@ -30,6 +30,7 @@ namespace Test
             InitializeComponent();
 
         }
+
         int flag = 0;
         double latTag = 0;
         double longTag = 0;
@@ -70,9 +71,20 @@ namespace Test
                         longgitude.AppendLine($"[{directory.Name}] {tag.Name} = {tag.Description}");
                         exifmessage.Text = sb.ToString();
                     }
+            //时间输出
+            foreach (var directory in directories)
+                foreach (var tag in directory.Tags)
+                    if ($"{tag.Name}" == "Date/Time")
+                    {
+                        sb.AppendLine($"[{directory.Name}] {tag.Name} = {tag.Description}");
+                        longgitude.AppendLine($"[{directory.Name}] {tag.Name} = {tag.Description}");
+                        exifmessage.Text = sb.ToString();
+                    }
             //转换经纬度
             double newlatitude = 0;
             double newlonggitude = 0;
+            GCJ02_WGS84 gCJ02_WGS84 = new GCJ02_WGS84();
+            ConvertBing convertBing = new ConvertBing();
             GPSConvert gPSConvert = new GPSConvert();
             newlatitude = gPSConvert.getlatitude(latitude);
             newlonggitude = gPSConvert.getlonggitude(longgitude);
@@ -88,10 +100,12 @@ namespace Test
             bingMap.Center = new Location(newlatitude, newlonggitude);
             bingMap.ZoomLevel = 14;
 
+            //图钉标注
+            var image = new Image { Width = 200, Height = 200, Margin = new Thickness(8) };
+            image.Source = new BitmapImage(new Uri(openfiledialog.FileName));
+            ToolTipService.SetToolTip(pushpin,image);
 
             //生成轨迹
-            
-
             if (flag > 0)
             {
                 MapPolyline polyline = new MapPolyline();
@@ -105,7 +119,7 @@ namespace Test
 
                 polyline.Stroke = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Red);
                 polyline.StrokeThickness = 5;
-                polyline.Opacity = 0.8;//不透明度
+                polyline.Opacity = 1;//不透明度
                 this.mapLayer.Children.Add(polyline);
             }
             latTag = newlatitude;
@@ -203,5 +217,6 @@ namespace Test
                 return newlonggitude;
             }
         }
+        
     }
 }
