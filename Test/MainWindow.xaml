@@ -7,6 +7,10 @@
         xmlns:local="clr-namespace:Test"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <ControlTemplate x:Key="ButtonWithCustomChrome">
+    </ControlTemplate>
+    </Window.Resources>
     <Grid VerticalAlignment="Bottom" HorizontalAlignment="Left" Height="407" Margin="10,0,0,2" Width="780">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="51*"/>

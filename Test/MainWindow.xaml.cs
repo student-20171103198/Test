@@ -20,6 +20,7 @@ using MetadataExtractor;
 
 namespace Test
 {
+
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
@@ -237,6 +238,7 @@ namespace Test
             }
         }
         
+        //右键清除路径
         public void RemoveControl(Pushpin pushpin , MapPolyline polyline)
         {
             MapLayer mapLayer = new MapLayer();
@@ -244,6 +246,7 @@ namespace Test
             this.mapLayer.Children.Remove(polyline);
         }
 
+        //右键清除图钉
         private void RemoveButton_Click(object sender, RoutedEventArgs e)
         {
             MainWindow mainWindow = new MainWindow();
@@ -252,9 +255,77 @@ namespace Test
             mainWindow.ShowDialog();
         }
 
+        //关闭
         private void CloseApp_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
+        }
+
+        //距离获取
+        static public double GetDistance(double lat1, double lng1, double lat2, double lng2)
+        {
+            double r1 = lat1;
+            double r2 =lng1;
+
+            double a = lat2;
+            double b = lng2;
+            int R = 6378137;
+            double s = Math.Acos(Math.Cos(r1) * Math.Cos(a) * Math.Cos(r2 - b) + Math.Sin(r1) * Math.Sin(a)) * R;
+                   
+            s = Math.Round(s * 10000) / 10000;
+            return s;
+        }
+
+        //渲染
+        public class CustomDrawnElement : FrameworkElement
+        {
+            public static DependencyProperty BackgroundColorProperty;
+
+            static CustomDrawnElement()
+            {
+                FrameworkPropertyMetadata metadata = new FrameworkPropertyMetadata(Colors.Yellow);
+                metadata.AffectsRender = true;
+                BackgroundColorProperty = DependencyProperty.Register("BackgroundColor", typeof(Color), typeof(CustomDrawnElement), metadata);
+            }
+            public Color BackgroundColor
+            {
+                get { return (Color)GetValue(BackgroundColorProperty); }
+                set  { SetValue(BackgroundColorProperty, value); }
+            }
+            protected override void OnMouseMove(MouseEventArgs e)
+            {
+                base.OnMouseMove(e);
+                this.InvalidateVisual();
+            }
+            protected override void OnMouseLeave(MouseEventArgs e)
+            {
+                base.OnMouseLeave(e);
+                this.InvalidateVisual();
+            }
+            protected override void OnRender(DrawingContext drawingContext)
+            {
+                base.OnRender(drawingContext);
+
+                /*Rect bounds = new Rect(0, 0, base.ActualWidth, base.ActualHeight);
+                drawingContext.DrawRectangle(GetForegroundBrush(), null, bounds);*/
+            }
+            private Brush GetForegroundBrush()
+            {
+                if (!IsMouseOver)
+                {
+                    return new SolidColorBrush(BackgroundColor);
+                }
+                else
+                {
+                    RadialGradientBrush brush = new RadialGradientBrush(Colors.White, BackgroundColor);
+                    Point absoluteGradientOrigin = Mouse.GetPosition(this);
+                    Point relativeGradientOrigin = new Point(absoluteGradientOrigin.X / base.ActualWidth, absoluteGradientOrigin.Y / base.ActualHeight);
+                    brush.GradientOrigin = relativeGradientOrigin;
+                    brush.Center = relativeGradientOrigin;
+
+                    return brush;
+                }
+            }
         }
     }
 }
