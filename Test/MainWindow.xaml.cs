@@ -27,6 +27,7 @@ namespace Test
     {
         public MainWindow()
         {
+            this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             InitializeComponent();
 
         }
@@ -34,6 +35,8 @@ namespace Test
         int flag = 0;
         double latTag = 0;
         double longTag = 0;
+
+        
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             //打开图片
@@ -88,16 +91,18 @@ namespace Test
             GPSConvert gPSConvert = new GPSConvert();
             newlatitude = gPSConvert.getlatitude(latitude);
             newlonggitude = gPSConvert.getlonggitude(longgitude);
-            latitudemessage.Text = "经度：" + newlatitude.ToString("#0.000");
-            longitudemessage.Text = "纬度：" + newlonggitude.ToString("#0.000");
+            convertBing = GCJ02_WGS84.wgs84_To_Gcj02(newlatitude, newlonggitude);
+            latitudemessage.Text = "经度：" + convertBing.getLatitude().ToString("#0.000");
+            longitudemessage.Text = "纬度：" + convertBing.getLongitude().ToString("#0.000");
 
             //生成图钉
             Pushpin pushpin = new Pushpin();
             MapLayer mapLayer = new MapLayer();
 
-            pushpin.Location = new Location(newlatitude, newlonggitude);
+            pushpin.MouseRightButtonDown += RemovePushpin;
+            pushpin.Location = new Location(convertBing.getLatitude(), convertBing.getLongitude());
             this.mapLayer.AddChild(pushpin, pushpin.Location);
-            bingMap.Center = new Location(newlatitude, newlonggitude);
+            bingMap.Center = new Location(convertBing.getLatitude(), convertBing.getLongitude());
             bingMap.ZoomLevel = 14;
 
             //图钉标注
@@ -110,7 +115,7 @@ namespace Test
             {
                 MapPolyline polyline = new MapPolyline();
                 Location startlocation = new Location(latTag,longTag);
-                Location endlocation = new Location(newlatitude,newlonggitude);
+                Location endlocation = new Location(convertBing.getLatitude(), convertBing.getLongitude());
                 polyline.Locations = new LocationCollection
                 {
                 new Location(startlocation),
@@ -121,10 +126,24 @@ namespace Test
                 polyline.StrokeThickness = 5;
                 polyline.Opacity = 1;//不透明度
                 this.mapLayer.Children.Add(polyline);
+                polyline.MouseRightButtonDown += RemovePolyline;
             }
-            latTag = newlatitude;
-            longTag = newlonggitude;
+            latTag = convertBing.getLatitude();
+            longTag = convertBing.getLongitude();
             flag++;
+
+        }
+
+        private void RemovePolyline(object sender, MouseButtonEventArgs e)
+        {
+            MapPolyline mapPolyline = (MapPolyline)sender;
+            this.mapLayer.Children.Remove(mapPolyline);
+        }
+
+        private void RemovePushpin(object sender, MouseButtonEventArgs e)
+        {
+            Pushpin pushpin = (Pushpin)sender;
+            this.mapLayer.Children.Remove(pushpin);
         }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -132,7 +151,7 @@ namespace Test
             //输出坐标
         }
          
-        class   GPSConvert
+        class   GPSConvert          //坐标转换
         {
             public double getlatitude(StringBuilder latitude)
             {
@@ -218,5 +237,24 @@ namespace Test
             }
         }
         
+        public void RemoveControl(Pushpin pushpin , MapPolyline polyline)
+        {
+            MapLayer mapLayer = new MapLayer();
+            this.mapLayer.Children.Remove(pushpin);
+            this.mapLayer.Children.Remove(polyline);
+        }
+
+        private void RemoveButton_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow mainWindow = new MainWindow();
+            mainWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            this.Hide();
+            mainWindow.ShowDialog();
+        }
+
+        private void CloseApp_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
     }
 }
